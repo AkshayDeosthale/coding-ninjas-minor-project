@@ -3,6 +3,7 @@ const app = express();
 const crypto = require("crypto");
 const path = require("path");
 const mongoose = require("mongoose");
+const Todo = require("./models/todo.model");
 const port = 8000;
 
 let tempTodos = [];
@@ -31,26 +32,38 @@ db.once("open", () => {
 });
 
 //API
-app.get("/", (req, res) => {
-  res.render("todopage", { tempTodos });
+app.get("/", async (req, res) => {
+  try {
+    const todos = await Todo.find();
+    console.log(todos);
+    res.render("todopage", { tempTodos: todos });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching todos" });
+  }
 });
 
-app.post("/form-submit", (req, res) => {
-  tempTodos.push({ ...req.body, id: crypto.randomUUID() });
-  console.log(tempTodos);
-  res.redirect("/");
+app.post("/form-submit", async (req, res) => {
+  const { name, date, category } = req.body;
+  try {
+    const newTodo = new Todo({ name, date, category });
+    await newTodo.save();
+    res.status(201).redirect("/");
+  } catch (error) {
+    res.status(500).json({ error: "Error creating todo" });
+  }
 });
 
-app.delete("/todo-delete/:id", (req, res) => {
+app.delete("/todo-delete/:id", async (req, res) => {
   const todoId = req.params.id;
-  const todoIndex = tempTodos.findIndex((todo) => todo.id === todoId);
-  tempTodos.splice(todoIndex, 1);
-
-  if (todoIndex !== -1) {
-    res.status(204).send("Deleted");
+  try {
+    const deletedTodo = await Todo.findByIdAndDelete(todoId);
+    if (!deletedTodo) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+    // Redirect back to the same page to trigger a refresh
     res.redirect("/");
-  } else {
-    res.status(404).send("Todo not found");
+  } catch (error) {
+    res.status(500).json({ error: "Error deleting todo" });
   }
 });
 

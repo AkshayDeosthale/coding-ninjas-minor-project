@@ -45,7 +45,7 @@
               <div class="chip todo-category"><%= todo.category %></div>
             </div>
           </div>
-          <button onclick="deleteTodo('<%= todo.id %>')" class="delete-button">
+          <button onclick="deleteTodo('<%= todo._id %>')" class="delete-button">
             Delete
           </button>
         </li>
@@ -55,7 +55,6 @@
 
     <script>
       async function deleteTodo(id) {
-        console.log("in");
         await fetch(`/todo-delete/${id}`, {
           method: "DELETE",
         });
