@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="public/css/style.css" />
+  </head>
+  <body>
+    <div class="todo-form">
+      <h2>Add Todo</h2>
+      <form method="post" action="/form-submit">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+        <div class="datecategorycontainer">
+          <div style="width: 50%" class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" required />
+          </div>
+          <div style="width: 50%" class="form-group">
+            <label for="category">Category</label>
+            <select id="category" name="category" required>
+              <option value="" disabled selected>Select a category</option>
+              <option value="work">Work</option>
+              <option value="personal">Personal</option>
+              <option value="shopping">Shopping</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit">Add Todo</button>
+      </form>
+    </div>
+
+    <div class="todo-list">
+      <ul>
+        <% for (let key = 0; key < tempTodos.length; key++) { %> <% let todo =
+        tempTodos[key]; %>
+        <li class="todo-item">
+          <label class="checkbox">
+            <input type="checkbox" class="checkbox" />
+          </label>
+          <div class="todo-details">
+            <h3 class="todo-name"><%= todo.name %></h3>
+            <div style="display: flex; gap: 10px; align-items: center">
+              <p class="todo-date"><%= todo.date %></p>
+              <div class="chip todo-category"><%= todo.category %></div>
+            </div>
+          </div>
+          <button onclick="deleteTodo('<%= todo.id %>')" class="delete-button">
+            Delete
+          </button>
+        </li>
+        <% } %>
+      </ul>
+    </div>
+
+    <script>
+      async function deleteTodo(id) {
+        console.log("in");
+        await fetch(`/todo-delete/${id}`, {
+          method: "DELETE",
+        });
+      }
+    </script>
+  </body>
+</html>
