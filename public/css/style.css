@@ -6,12 +6,26 @@
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
+
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   flex-direction: column;
+}
+@keyframes waveAnimation {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+body {
+  background: radial-gradient(circle, #ff00ff, #00ff00, #0000ff, #ffff00);
+  background-size: 200% 200%;
+  animation: waveAnimation 5s infinite alternate;
 }
 
 .todo-form {
