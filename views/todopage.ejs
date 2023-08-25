@@ -89,13 +89,7 @@
               method: "GET",
             }
           );
-          // const response = await fetch(`/todo-delete-group`, {
-          //   method: "POST",
-          //   headers: {
-          //     "Content-Type": "application/json",
-          //   },
-          //   body: JSON.stringify({ todos: checkedTodos }),
-          // });
+          location.reload();
         } else {
           window.alert("No todos were checked.");
         }
@@ -107,7 +101,7 @@
             "Content-Type": "application/json",
           },
         });
-        console.log(response);
+
         location.reload();
       }
     </script>

@@ -68,10 +68,18 @@ app.delete("/todo-delete/:id", async (req, res) => {
 
 //delete group
 app.get("/todo-delete-group", async (req, res) => {
-  const todoIds = req.params.deletelist;
-
-  console.log(todoIds);
-  res.send(todoIds);
+  const { deletelist } = req.query;
+  const temp = deletelist.split(",");
+  try {
+    const deletedTodo = await Todo.deleteMany({
+      _id: {
+        $in: temp,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+  res.send(temp);
 });
 
 app.listen(port, () => {
