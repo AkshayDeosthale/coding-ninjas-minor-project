@@ -1,12 +1,10 @@
 const express = require("express");
 const app = express();
-const crypto = require("crypto");
 const path = require("path");
 const mongoose = require("mongoose");
 const Todo = require("./models/todo.model");
 const port = 8000;
-
-let tempTodos = [];
+require("dotenv").config();
 
 app.use(express.urlencoded());
 
@@ -16,13 +14,10 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Connect to the MongoDB database
-mongoose.connect(
-  "mongodb+srv://akshay:akshay@cluster0.rns1o.mongodb.net/?retryWrites=true&w=majority",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+mongoose.connect(process.env.MONGODB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const db = mongoose.connection;
 
