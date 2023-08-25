@@ -35,7 +35,7 @@ db.once("open", () => {
 app.get("/", async (req, res) => {
   try {
     const todos = await Todo.find();
-    console.log(todos);
+
     res.render("todopage", { tempTodos: todos });
   } catch (error) {
     res.status(500).json({ error: "Error fetching todos" });
@@ -60,11 +60,18 @@ app.delete("/todo-delete/:id", async (req, res) => {
     if (!deletedTodo) {
       return res.status(404).json({ error: "Todo not found" });
     }
-    // Redirect back to the same page to trigger a refresh
     res.redirect("/");
   } catch (error) {
     res.status(500).json({ error: "Error deleting todo" });
   }
+});
+
+//delete group
+app.get("/todo-delete-group", async (req, res) => {
+  const todoIds = req.params.deletelist;
+
+  console.log(todoIds);
+  res.send(todoIds);
 });
 
 app.listen(port, () => {

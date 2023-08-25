@@ -31,12 +31,27 @@
     </div>
 
     <div class="todo-list">
+      <% if(tempTodos.length > 0){ %>
+      <button
+        style="margin-bottom: 20px"
+        class="delete-button"
+        type="button"
+        onclick="collectCheckedTodos()"
+      >
+        Delete Selected Tasks
+      </button>
+      <% } %>
+
       <ul>
         <% for (let key = 0; key < tempTodos.length; key++) { %> <% let todo =
         tempTodos[key]; %>
         <li class="todo-item">
           <label class="checkbox">
-            <input type="checkbox" class="checkbox" />
+            <input
+              data-todo-id="<%= todo._id %>"
+              type="checkbox"
+              class="checkbox"
+            />
           </label>
           <div class="todo-details">
             <h3 class="todo-name"><%= todo.name %></h3>
@@ -54,10 +69,46 @@
     </div>
 
     <script>
-      async function deleteTodo(id) {
-        await fetch(`/todo-delete/${id}`, {
-          method: "DELETE",
+      async function collectCheckedTodos() {
+        const checkboxes = document.querySelectorAll(
+          ".todo-item input[type='checkbox']"
+        );
+        const checkedTodos = [];
+
+        checkboxes.forEach((checkbox) => {
+          if (checkbox.checked) {
+            const todoId = checkbox.dataset.todoId; // Add a data attribute to store todo id
+            checkedTodos.push(todoId);
+          }
         });
+
+        if (checkedTodos.length > 0) {
+          const response = await fetch(
+            `/todo-delete-group?deletelist=${checkedTodos.toString()}`,
+            {
+              method: "GET",
+            }
+          );
+          // const response = await fetch(`/todo-delete-group`, {
+          //   method: "POST",
+          //   headers: {
+          //     "Content-Type": "application/json",
+          //   },
+          //   body: JSON.stringify({ todos: checkedTodos }),
+          // });
+        } else {
+          window.alert("No todos were checked.");
+        }
+      }
+      async function deleteTodo(id) {
+        const response = await fetch(`/todo-delete/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log(response);
+        location.reload();
       }
     </script>
   </body>
